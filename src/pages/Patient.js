@@ -1,10 +1,14 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 
 // import { Container } from './styles';
 
 const Patient = () => {
-  return <View />;
+  return(
+  <View>
+    <Text>b</Text>
+  </View> 
+  );
 }
 
 export default Patient;

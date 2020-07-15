@@ -1,89 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native'
+import * as React from 'react';
+import { Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import Doctor from './Doctor'
-import Patient from './Patient';
-import Search from './Search';
+import Doctor from './pages/Doctor'
+import Patient from './pages/Patient'
+import Search from './pages/Search'
 
 
 const Tab = createBottomTabNavigator();
 
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator tabBarOptions={{labelPosition:'beside-icon'}}>
+        <Tab.Screen
+        options={{
+            title: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginHorizontal: 20 }}>
+                    <Fontisto name={'doctor'} size={33} color={ focused ? '#309D9E' : "gray"} />
+                </View>
+            ) 
 
-export default function Tabnavigation() {
+        }}
+        name="Doctor" component={Doctor} />
+        <Tab.Screen
+        options={{
+            title: ({ focused }) => (
+                <View style={{ alignItems: 'center', marginHorizontal: 20 }}>
+                    <MaterialCommunityIcons name={'text-box-search-outline'} size={33} color={ focused ? '#309D9E' : "gray"} />
+                </View>
+            )
 
+        }}
+        name="Patient" component={Patient} />
+        <Tab.Screen
+        options={{
+            title: ({ focused }) => (
+                <View style={{ alignItems: 'flex-end', marginHorizontal: 20 }}>
+                   <FontAwesome5 name={'user-edit'} size={30} color={ focused ? '#309D9E' : "gray"} />
+                </View>
+            )
 
-    return (
-        <Tab.Navigator
-
-            initialRouteName='Doctor'
-            screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
-
-                    if (route.name === 'Doctor') {
-                        iconName = focused ? 'md-home' : 'md-home';
-                        return <Ionicons name={iconName} size={30} color={color} />;
-                    } else if (route.name === 'Patient') {
-                        iconName = focused
-                            ? 'ios-list'
-                            : 'ios-list';
-                        return <Ionicons name={iconName} size={30} color={color} />;
-                    }else if (route.name === 'Search') {
-                        iconName = focused
-                            ? 'ios-list'
-                            : 'ios-list';
-                        return <Ionicons name={iconName} size={30} color={color} />;
-                    }
-
-                },
-
-            })}
-            tabBarOptions={{
-
-                activeTintColor: '#14733a',
-                inactiveTintColor: 'gray',
-                labelPosition: 'beside-icon',
-                style: {
-                    backgroundColor: '#fff',
-                    position: 'absolute', bottom: 0,
-                }
-            }}
-        >
-
-            <Tab.Screen name="Doctor" options={{
-                title: ({ focused }) => (
-                    <View style={{ alignItems: 'flex-end', marginLeft: 20 }}>
-                        <Text style={{ color: focused ? '#14733a' : "gray", }}>
-
-                        </Text>
-                    </View>
-                )
-
-            }} component={Doctor} nameroute={"Doctor"} />
-            <Tab.Screen name="Patient" options={{
-                title: ({ focused }) => (
-                    <View style={{ alignItems: 'flex-end', marginLeft: 20 }}>
-                        <Text style={{ color: focused ? '#14733a' : "gray", }}>
-
-                        </Text>
-                    </View>
-                )
-            }} component={Patient} />
-
-            <Tab.Screen name="Search" options={{
-                title: ({ focused }) => (
-                    <View style={{ alignItems: 'flex-end', marginLeft: 20 }}>
-                        <Text style={{ color: focused ? '#14733a' : "gray", }}>
-
-                        </Text>
-                    </View>
-                )
-            }} component={Search} />
-        </Tab.Navigator>
-
-
-    );
+        }}
+        name="Search" component={Search} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 }
