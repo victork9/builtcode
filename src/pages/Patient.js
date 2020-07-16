@@ -8,10 +8,12 @@ import {
   Modal,
   Alert,
   TextInput,
-  ToastAndroid
+  ToastAndroid,
+  Picker
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import closeRow from '../componets/closeRow'
+import validateCpf from '../componets/validateCpf'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import styles from '../styles/styles'
@@ -47,7 +49,7 @@ export default function Patient() {
       await setDate(currentDate);
       setDateBirth(fullDate)
 
-    }else {
+    } else {
       setShow(false)
       return
     }
@@ -59,7 +61,7 @@ export default function Patient() {
   }
 
   useEffect(() => {
-    
+
     listPatient()
   }, [])
 
@@ -71,15 +73,23 @@ export default function Patient() {
       ToastAndroid.show("Por favor, digite um Cpf Válido", ToastAndroid.LONG)
     } else if (dateBirth == '') {
       ToastAndroid.show("Por favor, escolha uma data Válido", ToastAndroid.LONG)
+    } else if (validateCpf(cpfPatient) != true) {
+      ToastAndroid.show("Cpf não é válido", ToastAndroid.LONG)
     }
     else {
-
+      var json = {
+        namePatient,
+        cpfPatient,
+        dateBirth,
+        identificador: identificador.length > 0 ? identificador : null
+      }
+      console.log(json)
       try {
         const typeEnv = modeBtn == true ? 'upInfoPatient' : 'cadPatient'
         const response = await api.post(`/${typeEnv}/`, {
           namePatient,
           cpfPatient,
-          date,
+          dateBirth,
           identificador: identificador.length > 0 ? identificador : null
         })
         console.log(response)
@@ -112,7 +122,7 @@ export default function Patient() {
   function loadInfo(rowMap, rowKey) {
     setmodeBtn(true)
     const keyData = listData.filter(item => item.key === rowKey)
-
+    setDate("2020-07-20")
     setcpfPatient(keyData[0].Cpf)
     setIdentificador(keyData[0].key)
     setnamePatient(keyData[0].name)
@@ -198,7 +208,7 @@ export default function Patient() {
   return (
     <>
       <Text style={styles.textTop}>Lista De Pacientes</Text>
-
+    
       <Modal
         animationType="slide"
         transparent={true}
@@ -240,9 +250,9 @@ export default function Patient() {
                 paddingBottom: 0,
               }}
                 value={cpfPatient}
-                keyboardType={'numeric'}
+                keyboardType={'default'}
                 maxLength={13}
-                placeholder={"Ex: 12546"}
+                placeholder={"Ex: XXXXXXXXXXX"}
                 onChangeText={(text) => setcpfPatient(text)}
                 multiline={true}
               />
@@ -261,13 +271,30 @@ export default function Patient() {
                 value={dateBirth}
                 autoCapitalize={'characters'}
                 editable={false}
-                placeholder={"Ex: SP"}
                 onChangeText={(text) => { }}
                 multiline={true}
               />
-              <TouchableOpacity style={{ height: 40, width: 40, }} onPress={() => setShow(!show)}>
+              <TouchableOpacity style={{ height: 40, width: 40, }} onPress={() => {
+                setShow(!show)
+                setDate(new Date())
+              }}>
                 <Entypo name="calendar" size={40} color="#309D9E" />
               </TouchableOpacity>
+            </View>
+
+            <View style={{ width: '80%', height: 40 }}>
+              <Picker
+              
+                mode={'dialog'}
+                onValueChange={(itemValue) => { }
+                }
+              >
+
+                <Picker.Item label={"Selecione o médico"} value={""} />
+                <Picker.Item label={"Vila Mariana"} value={"75993"} />
+                <Picker.Item label={"Vila Guilherme"} value={"75992"} />
+
+              </Picker>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
               <TouchableHighlight
@@ -300,6 +327,7 @@ export default function Patient() {
                 <Text style={styles.textStyle}>FECHAR</Text>
               </TouchableHighlight>
             </View>
+
           </View>
         </View>
       </Modal>

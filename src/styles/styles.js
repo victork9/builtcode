@@ -80,6 +80,7 @@ export default StyleSheet.create({
        
     },
     centeredView: {
+       
        height:'100%',
         justifyContent:'center',
         alignItems: "center",
@@ -93,7 +94,6 @@ export default StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 20,
         padding: 5,
-        
         shadowColor: "#000",
         shadowOffset: {
             width: 10,
@@ -101,7 +101,7 @@ export default StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        elevation: 5
+        elevation: 10
     },
     openButton: {
         justifyContent:'flex-end',
