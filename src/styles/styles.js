@@ -6,7 +6,7 @@ export default StyleSheet.create({
         fontSize: 18,
         alignSelf: 'center',
         justifyContent: 'center',
-        marginTop: 10
+        marginTop: 10,
     },
     btnfooter: {
         justifyContent: 'center',
@@ -80,20 +80,20 @@ export default StyleSheet.create({
        
     },
     centeredView: {
-        flex: 1,
-        justifyContent: "center",
+       height:'100%',
+        justifyContent:'center',
         alignItems: "center",
         marginTop: 22
     },
 
     modalView: {
-        height: '50%',
+        
         width: '90%',
         margin: 10,
         backgroundColor: "white",
         borderRadius: 20,
         padding: 5,
-        alignItems: "center",
+        
         shadowColor: "#000",
         shadowOffset: {
             width: 10,
@@ -104,6 +104,7 @@ export default StyleSheet.create({
         elevation: 5
     },
     openButton: {
+        justifyContent:'flex-end',
         marginTop:30,
         backgroundColor: "#F194FF",
         borderRadius: 20,
