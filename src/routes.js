@@ -36,7 +36,7 @@ export default function App() {
             )
 
         }}
-        name="Patient" component={Patient} />
+        name="Search" component={Search} />
         <Tab.Screen
         options={{
             title: ({ focused }) => (
@@ -46,7 +46,7 @@ export default function App() {
             )
 
         }}
-        name="Search" component={Search} />
+        name="Patient"  component={Patient} />
       </Tab.Navigator>
     </NavigationContainer>
   );
