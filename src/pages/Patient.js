@@ -10,20 +10,48 @@ import {
   TextInput,
   ToastAndroid
 } from 'react-native';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
+import closeRow from '../componets/closeRow'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import styles from '../styles/styles'
 import api from '../services/api'
 export default function Patient() {
+  //date picker
+  const [date, setDate] = useState(new Date());
+  const [dateBirth, setDateBirth] = useState('');
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+
   const [listData, setListData] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
-  const [nameDoc, setnameDoc] = useState('');
-  const [crmDoc, setcrmDoc] = useState('');
-  const [stateDoc, setstateDoc] = useState('');
+  const [namePatient, setnamePatient] = useState('');
+  const [cpfPatient, setcpfPatient] = useState('');
+
   const [identificador, setIdentificador] = useState('');
   const [modeBtn, setmodeBtn] = useState(false);
 
+
+  // functions to date picker
+  const onChange = async (event, selectedDate) => {
+    if (event.type == "set") {
+      const currentDate = selectedDate || date;
+      setShow(Platform.OS === 'ios');
+
+
+
+      const dataBirth = currentDate.getDate()
+      const MesBirth = currentDate.getMonth() + 1
+      const YearBirth = currentDate.getFullYear()
+      const fullDate = (dataBirth <= 9 ? '0' + dataBirth : dataBirth) + '-' + (MesBirth <= 9 ? '0' + MesBirth : MesBirth) + '-' + YearBirth
+      await setDate(currentDate);
+      setDateBirth(fullDate)
+
+    }else {
+      setShow(false)
+      return
+    }
+  };
 
   async function listPatient() {
     const response = await api.get('/ListPatients')
@@ -31,35 +59,38 @@ export default function Patient() {
   }
 
   useEffect(() => {
+    
     listPatient()
   }, [])
 
   async function infosPatient() {
-    if (nameDoc.length < 2) {
+    console.log(date)
+    if (namePatient.length < 2) {
       ToastAndroid.show("Por favor, digite um nome Válido", ToastAndroid.LONG)
-    } else if (crmDoc.length < 3) {
-      ToastAndroid.show("Por favor, digite um CRM Válido", ToastAndroid.LONG)
+    } else if (cpfPatient.length < 3) {
+      ToastAndroid.show("Por favor, digite um Cpf Válido", ToastAndroid.LONG)
+    } else if (dateBirth == '') {
+      ToastAndroid.show("Por favor, escolha uma data Válido", ToastAndroid.LONG)
     }
-    else if (stateDoc < 2) {
-      ToastAndroid.show("Por favor, digite um estado Válido", ToastAndroid.LONG)
-    } else {
+    else {
 
       try {
         const typeEnv = modeBtn == true ? 'upInfoPatient' : 'cadPatient'
         const response = await api.post(`/${typeEnv}/`, {
-          nameDoc,
-          crmDoc,
-          stateDoc,
+          namePatient,
+          cpfPatient,
+          date,
           identificador: identificador.length > 0 ? identificador : null
         })
+        console.log(response)
         if (modeBtn == true) {
           await updateInfoOff()
         }
         listPatient()
         setIsVisible(false)
-        setcrmDoc('')
-        setstateDoc('')
-        setnameDoc('')
+        setcpfPatient('')
+        setShow(false)
+        setnamePatient('')
         setmodeBtn(false)
         setIdentificador('')
 
@@ -72,30 +103,25 @@ export default function Patient() {
   function updateInfoOff() {
     const updateInfoOff = listData.filter(item => item.key === identificador)
 
-    updateInfoOff[0].Crm = crmDoc
-    updateInfoOff[0].name = nameDoc
-    updateInfoOff[0].CrmUf = `${crmDoc}-${stateDoc}`
+    updateInfoOff[0].Cpf = cpfPatient
+    updateInfoOff[0].name = namePatient
+    updateInfoOff[0].DataNasc = dateBirth
     return;
   }
 
   function loadInfo(rowMap, rowKey) {
     setmodeBtn(true)
     const keyData = listData.filter(item => item.key === rowKey)
-    const state = keyData[0].CrmUf.split('-')
-    setcrmDoc(keyData[0].Crm)
+
+    setcpfPatient(keyData[0].Cpf)
     setIdentificador(keyData[0].key)
-    setstateDoc(state[1])
-    setnameDoc(keyData[0].name)
+    setnamePatient(keyData[0].name)
+    setDateBirth(keyData[0].DataNasc)
     setIsVisible(true)
     closeRow(rowMap, rowKey)
   }
 
-  const closeRow = (rowMap, rowKey) => {
-    console.log(rowKey)
-    if (rowMap[rowKey]) {
-      rowMap[rowKey].closeRow();
-    }
-  };
+
 
   const deleteRow = async (rowMap, rowKey) => {
     console.log(rowKey)
@@ -125,8 +151,8 @@ export default function Patient() {
 
   const renderItem = data => (
     <TouchableHighlight
-      onPress={() => { }}
-      style={[styles.rowFront,{height:75}]}
+      onPress={() => { console.log(data) }}
+      style={[styles.rowFront, { height: 75 }]}
       underlayColor={'#fff'}
     >
       <View style={{ marginLeft: 15 }}>
@@ -143,13 +169,13 @@ export default function Patient() {
     return (
       <View style={styles.rowBack}>
         <TouchableOpacity
-          style={[styles.backRightBtn, styles.backRightBtnLeft,{height:80}]}
+          style={[styles.backRightBtn, styles.backRightBtnLeft, { height: 80 }]}
           onPress={() => loadInfo(rowMap, data.item.key)}
         >
           <Text style={styles.backTextWhite}>Editar</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.backRightBtn, styles.backRightBtnRight,{height:80}]}
+          style={[styles.backRightBtn, styles.backRightBtnRight, { height: 80 }]}
           onPress={() => {
             Alert.alert(`Excluir`,
               `Deseja Realmente excluir o registro ?`,
@@ -197,8 +223,8 @@ export default function Patient() {
 
               }}
                 placeholder={"Ex: João da silva"}
-                value={nameDoc}
-                onChangeText={(text) => setnameDoc(text)}
+                value={namePatient}
+                onChangeText={(text) => setnamePatient(text)}
                 multiline={true}
               />
 
@@ -213,33 +239,35 @@ export default function Patient() {
                 fontSize: 17,
                 paddingBottom: 0,
               }}
-                value={crmDoc}
+                value={cpfPatient}
                 keyboardType={'numeric'}
                 maxLength={13}
                 placeholder={"Ex: 12546"}
-                onChangeText={(text) => setcrmDoc(text)}
+                onChangeText={(text) => setcpfPatient(text)}
                 multiline={true}
               />
 
             </View>
             <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 20 }}>
-              <Text style={{ textAlignVertical: 'center', fontSize: 16, width: '50%' }}>Data de Nasc :</Text>
+              <Text style={{ textAlignVertical: 'center', fontSize: 16, width: '40%' }}>Data de Nasc :</Text>
               <TextInput style={{
-                width: '30%',
+                width: '40%',
                 height: 40,
                 borderBottomColor: '#309D9E',
                 borderBottomWidth: 1,
                 fontSize: 17,
                 paddingBottom: 0,
               }}
-                value={stateDoc}
+                value={dateBirth}
                 autoCapitalize={'characters'}
-                maxLength={2}
+                editable={false}
                 placeholder={"Ex: SP"}
-                onChangeText={(text) => setstateDoc(text)}
+                onChangeText={(text) => { }}
                 multiline={true}
               />
-
+              <TouchableOpacity style={{ height: 40, width: 40, }} onPress={() => setShow(!show)}>
+                <Entypo name="calendar" size={40} color="#309D9E" />
+              </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
               <TouchableHighlight
@@ -264,9 +292,9 @@ export default function Patient() {
                 style={{ ...styles.openButton, backgroundColor: "#2196F3", width: 90, }}
                 onPress={() => {
                   setIsVisible(false)
-                  setcrmDoc('')
-                  setstateDoc('')
-                  setnameDoc('')
+                  setcpfPatient('')
+                  setShow(false)
+                  setnamePatient('')
                   setmodeBtn(false)
                 }}>
                 <Text style={styles.textStyle}>FECHAR</Text>
@@ -299,6 +327,17 @@ export default function Patient() {
           <Entypo name="circle-with-plus" size={50} color="#309D9E" />
         </TouchableOpacity>
       </View>
+
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode={mode}
+          is24Hour={true}
+          display="spinner"
+          onChange={onChange}
+        />
+      )}
     </>
   );
 }

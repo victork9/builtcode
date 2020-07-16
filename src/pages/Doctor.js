@@ -10,7 +10,7 @@ import {
   TextInput,
   ToastAndroid
 } from 'react-native';
-
+import closeRow from '../componets/closeRow'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import styles from '../styles/styles'
@@ -52,17 +52,20 @@ export default function Doctor() {
           stateDoc,
           identificador: identificador.length > 0 ? identificador : null
         })
-        if (modeBtn == true) {
-          await updateInfoOff()
+        if (modeBtn == false && response.date == 'Existe') {
+          Alert.alert("Atenção", "Médico já possue cadastro")
+        } else {
+          if (modeBtn == true) {
+            await updateInfoOff()
+          }
+          listDoctor()
+          setIsVisible(false)
+          setcrmDoc('')
+          setstateDoc('')
+          setnameDoc('')
+          setmodeBtn(false)
+          setIdentificador('')
         }
-        listDoctor()
-        setIsVisible(false)
-        setcrmDoc('')
-        setstateDoc('')
-        setnameDoc('')
-        setmodeBtn(false)
-        setIdentificador('')
-
       } catch (error) {
         Alert.alert("Falha na conexão")
       }
@@ -90,12 +93,7 @@ export default function Doctor() {
     closeRow(rowMap, rowKey)
   }
 
-  const closeRow = (rowMap, rowKey) => {
-    console.log(rowKey)
-    if (rowMap[rowKey]) {
-      rowMap[rowKey].closeRow();
-    }
-  };
+
 
   const deleteRow = async (rowMap, rowKey) => {
     console.log(rowKey)
