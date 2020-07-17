@@ -38,7 +38,7 @@ export default function App() {
         }}
         name="Search" component={Search} />
         <Tab.Screen
-        options={{
+        options={{ 
             title: ({ focused }) => (
                 <View style={{ alignItems: 'flex-end', marginHorizontal: 20 }}>
                    <FontAwesome5 name={'user-edit'} size={30} color={ focused ? '#309D9E' : "gray"} />

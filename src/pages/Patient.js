@@ -15,17 +15,21 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import closeRow from '../componets/closeRow'
 import validateCpf from '../componets/validateCpf'
 import Entypo from 'react-native-vector-icons/Entypo'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import styles from '../styles/styles'
 import api from '../services/api'
+
 export default function Patient() {
   //date picker
   const [date, setDate] = useState(new Date());
   const [dateBirth, setDateBirth] = useState('');
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+  const [Medico, setMedico] = useState('');
 
   const [listData, setListData] = useState([]);
+  const [listDataDoctor, setListDataDoctor] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [namePatient, setnamePatient] = useState('');
   const [cpfPatient, setcpfPatient] = useState('');
@@ -65,6 +69,16 @@ export default function Patient() {
     listPatient()
   }, [])
 
+  async function listDoctor() {
+    const response = await api.get('/ListDoctors')
+    setListDataDoctor(response.data)
+  }
+
+  useEffect(() => {
+    listDoctor()
+  }, [])
+
+
   async function infosPatient() {
     console.log(date)
     if (namePatient.length < 2) {
@@ -72,27 +86,24 @@ export default function Patient() {
     } else if (cpfPatient.length < 3) {
       ToastAndroid.show("Por favor, digite um Cpf Válido", ToastAndroid.LONG)
     } else if (dateBirth == '') {
-      ToastAndroid.show("Por favor, escolha uma data Válido", ToastAndroid.LONG)
+      ToastAndroid.show("Por favor, escolha uma data Válida", ToastAndroid.LONG)
     } else if (validateCpf(cpfPatient) != true) {
       ToastAndroid.show("Cpf não é válido", ToastAndroid.LONG)
+    } else if (Medico == '') {
+      ToastAndroid.show("Por favor, Escolha um médico", ToastAndroid.LONG)
     }
     else {
-      var json = {
-        namePatient,
-        cpfPatient,
-        dateBirth,
-        identificador: identificador.length > 0 ? identificador : null
-      }
-      console.log(json)
+
       try {
         const typeEnv = modeBtn == true ? 'upInfoPatient' : 'cadPatient'
         const response = await api.post(`/${typeEnv}/`, {
           namePatient,
-          cpfPatient,
+          cpfPatient: cpfPatient.replace(/\.|\-|\//g, ''),
           dateBirth,
+          Medico,
           identificador: identificador.length > 0 ? identificador : null
         })
-        console.log(response)
+
         if (modeBtn == true) {
           await updateInfoOff()
         }
@@ -116,17 +127,20 @@ export default function Patient() {
     updateInfoOff[0].Cpf = cpfPatient
     updateInfoOff[0].name = namePatient
     updateInfoOff[0].DataNasc = dateBirth
+    updateInfoOff[0].fk_doc = Medico
     return;
   }
 
   function loadInfo(rowMap, rowKey) {
     setmodeBtn(true)
     const keyData = listData.filter(item => item.key === rowKey)
-    setDate("2020-07-20")
+  
+    setDate(new Date())
     setcpfPatient(keyData[0].Cpf)
     setIdentificador(keyData[0].key)
     setnamePatient(keyData[0].name)
     setDateBirth(keyData[0].DataNasc)
+    setMedico(keyData[0].fk_doc)
     setIsVisible(true)
     closeRow(rowMap, rowKey)
   }
@@ -139,16 +153,13 @@ export default function Patient() {
       const response = await api.post('/deletePatient/', {
         identificador: rowKey
       })
-      if (response.data == "existe Registro") {
-        Alert.alert("Atenção", "Não é possível excluir o registro, pois existe pacientes vinculados a este médico")
-        closeRow(rowMap, rowKey);
-      } else {
-        closeRow(rowMap, rowKey);
-        const newData = [...listData];
-        const prevIndex = listData.findIndex(item => item.key === rowKey);
-        newData.splice(prevIndex, 1);
-        setListData(newData);
-      }
+
+      closeRow(rowMap, rowKey);
+      const newData = [...listData];
+      const prevIndex = listData.findIndex(item => item.key === rowKey);
+      newData.splice(prevIndex, 1);
+      setListData(newData);
+
     } catch (error) {
       console.log(error)
     }
@@ -168,6 +179,9 @@ export default function Patient() {
       <View style={{ marginLeft: 15 }}>
         <Text style={{ fontSize: 17 }}>Nome: {data.item.name}</Text>
         <Text style={{ fontSize: 17 }}>CPF: {data.item.Cpf}</Text>
+        <View style={{justifyContent:'center',marginVertical:15, alignSelf:"flex-end",position:'absolute'}}>
+        <MaterialIcons name="keyboard-arrow-left" size={50} color="#309D9E" />
+        </View>
         <Text style={{ fontSize: 17 }}>Data de Nasc: {data.item.DataNasc}</Text>
       </View>
 
@@ -175,7 +189,7 @@ export default function Patient() {
   );
 
   const renderHiddenItem = (data, rowMap) => {
-
+   
     return (
       <View style={styles.rowBack}>
         <TouchableOpacity
@@ -208,7 +222,7 @@ export default function Patient() {
   return (
     <>
       <Text style={styles.textTop}>Lista De Pacientes</Text>
-    
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -251,7 +265,7 @@ export default function Patient() {
               }}
                 value={cpfPatient}
                 keyboardType={'default'}
-                maxLength={13}
+                maxLength={14}
                 placeholder={"Ex: XXXXXXXXXXX"}
                 onChangeText={(text) => setcpfPatient(text)}
                 multiline={true}
@@ -282,17 +296,20 @@ export default function Patient() {
               </TouchableOpacity>
             </View>
 
-            <View style={{ width: '80%', height: 40 }}>
+            <View style={{ width: '100%', height: 40 }}>
               <Picker
-              
+
                 mode={'dialog'}
-                onValueChange={(itemValue) => { }
+                onValueChange={(itemValue) => { setMedico(itemValue) }
                 }
+                selectedValue={Medico}
               >
 
-                <Picker.Item label={"Selecione o médico"} value={""} />
-                <Picker.Item label={"Vila Mariana"} value={"75993"} />
-                <Picker.Item label={"Vila Guilherme"} value={"75992"} />
+                <Picker.Item label={"Selecione um médico"} value={""} />
+                {listDataDoctor.map((item, index) =>
+                  (
+                    <Picker.Item label={item.name} value={item.key} key={index} />)
+                )}
 
               </Picker>
             </View>
@@ -323,6 +340,7 @@ export default function Patient() {
                   setShow(false)
                   setnamePatient('')
                   setmodeBtn(false)
+                  setMedico('')
                 }}>
                 <Text style={styles.textStyle}>FECHAR</Text>
               </TouchableHighlight>

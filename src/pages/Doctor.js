@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import closeRow from '../componets/closeRow'
 import Entypo from 'react-native-vector-icons/Entypo'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import styles from '../styles/styles'
 import api from '../services/api'
@@ -130,6 +131,9 @@ export default function Doctor() {
       <View style={{ marginLeft: 15 }}>
         <Text style={{ fontSize: 17 }}>Nome: {data.item.name}</Text>
         <Text style={{ fontSize: 17 }}>Crm: {data.item.CrmUf}</Text>
+        <View style={{justifyContent:'center',alignSelf:"flex-end",position:'absolute'}}>
+        <MaterialIcons name="keyboard-arrow-left" size={50} color="#309D9E" />
+        </View>
       </View>
 
     </TouchableHighlight>

@@ -1,4 +1,6 @@
 const validateCpf = (strCPF) =>{
+  strCPF =  strCPF.replace(/\.|\-|\//g, '');
+    console.log(strCPF)
     var Soma;
     var Resto;
     Soma = 0;
