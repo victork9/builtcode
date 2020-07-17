@@ -33,7 +33,7 @@ export default function Doctor() {
     } catch (error) {
       console.log("Falha conexão")
     }
-   
+
   }
 
   useEffect(() => {
@@ -136,8 +136,8 @@ export default function Doctor() {
       <View style={{ marginLeft: 15 }}>
         <Text style={{ fontSize: 17 }}>Nome: {data.item.name}</Text>
         <Text style={{ fontSize: 17 }}>Crm: {data.item.CrmUf}</Text>
-        <View style={{justifyContent:'center',alignSelf:"flex-end",position:'absolute'}}>
-        <MaterialIcons name="keyboard-arrow-left" size={50} color="#309D9E" />
+        <View style={{ justifyContent: 'center', alignSelf: "flex-end", position: 'absolute' }}>
+          <MaterialIcons name="keyboard-arrow-left" size={50} color="#309D9E" />
         </View>
       </View>
 
@@ -193,15 +193,7 @@ export default function Doctor() {
             <Text style={styles.modalText}>Cadastro de Médicos</Text>
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ textAlignVertical: 'center', fontSize: 16 }}>Nome :</Text>
-              <TextInput style={{
-                width: '80%',
-                height: 40,
-                borderBottomColor: '#309D9E',
-                borderBottomWidth: 1,
-                fontSize: 17,
-                paddingBottom: 0,
-
-              }}
+              <TextInput style={styles.txtInput}
                 placeholder={"Ex: João da silva"}
                 value={nameDoc}
                 onChangeText={(text) => setnameDoc(text)}
@@ -211,14 +203,7 @@ export default function Doctor() {
             </View>
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <Text style={{ textAlignVertical: 'center', fontSize: 16 }}>Crm :</Text>
-              <TextInput style={{
-                width: '80%',
-                height: 40,
-                borderBottomColor: '#309D9E',
-                borderBottomWidth: 1,
-                fontSize: 17,
-                paddingBottom: 0,
-              }}
+              <TextInput style={styles.txtInput}
                 value={crmDoc}
                 keyboardType={'numeric'}
                 maxLength={13}
@@ -230,14 +215,10 @@ export default function Doctor() {
             </View>
             <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 20 }}>
               <Text style={{ textAlignVertical: 'center', fontSize: 16, width: '50%' }}>Estado de atuação :</Text>
-              <TextInput style={{
+              <TextInput style={[styles.txtInput, {
                 width: '30%',
-                height: 40,
-                borderBottomColor: '#309D9E',
-                borderBottomWidth: 1,
-                fontSize: 17,
-                paddingBottom: 0,
-              }}
+
+              }]}
                 value={stateDoc}
                 autoCapitalize={'characters'}
                 maxLength={2}

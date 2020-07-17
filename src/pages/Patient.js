@@ -67,7 +67,7 @@ export default function Patient() {
     } catch (error) {
       console.log("Falha conexão")
     }
-   
+
   }
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function Patient() {
     } catch (error) {
       console.log('Falha conexão')
     }
-   
+
   }
 
   useEffect(() => {
@@ -254,15 +254,7 @@ export default function Patient() {
             <Text style={styles.modalText}>Cadastro de Pacientes</Text>
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ textAlignVertical: 'center', fontSize: 16 }}>Nome :</Text>
-              <TextInput style={{
-                width: '80%',
-                height: 40,
-                borderBottomColor: '#309D9E',
-                borderBottomWidth: 1,
-                fontSize: 17,
-                paddingBottom: 0,
-
-              }}
+              <TextInput style={styles.txtInput}
                 placeholder={"Ex: João da silva"}
                 value={namePatient}
                 onChangeText={(text) => setnamePatient(text)}
@@ -272,14 +264,7 @@ export default function Patient() {
             </View>
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <Text style={{ textAlignVertical: 'center', fontSize: 16 }}>Cpf :</Text>
-              <TextInput style={{
-                width: '80%',
-                height: 40,
-                borderBottomColor: '#309D9E',
-                borderBottomWidth: 1,
-                fontSize: 17,
-                paddingBottom: 0,
-              }}
+              <TextInput style={styles.txtInput}
                 value={cpfPatient}
                 keyboardType={'default'}
                 maxLength={14}
@@ -291,14 +276,7 @@ export default function Patient() {
             </View>
             <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 20 }}>
               <Text style={{ textAlignVertical: 'center', fontSize: 16, width: '40%' }}>Data de Nasc :</Text>
-              <TextInput style={{
-                width: '40%',
-                height: 40,
-                borderBottomColor: '#309D9E',
-                borderBottomWidth: 1,
-                fontSize: 17,
-                paddingBottom: 0,
-              }}
+              <TextInput style={[styles.txtInput, { width: '40%' }]}
                 value={dateBirth}
                 autoCapitalize={'characters'}
                 editable={false}

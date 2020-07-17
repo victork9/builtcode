@@ -67,28 +67,28 @@ export default StyleSheet.create({
         position: 'absolute',
         top: 0,
         width: 95,
-        height:60
+        height: 60
     },
     backRightBtnLeft: {
         backgroundColor: 'blue',
         right: 95,
-       
+
     },
     backRightBtnRight: {
         backgroundColor: 'red',
         right: 0,
-       
+
     },
     centeredView: {
-       
-       height:'100%',
-        justifyContent:'center',
+
+        height: '100%',
+        justifyContent: 'center',
         alignItems: "center",
         marginTop: 22
     },
 
     modalView: {
-        
+
         width: '90%',
         margin: 10,
         backgroundColor: "white",
@@ -104,8 +104,8 @@ export default StyleSheet.create({
         elevation: 10
     },
     openButton: {
-        justifyContent:'flex-end',
-        marginTop:30,
+        justifyContent: 'flex-end',
+        marginTop: 30,
         backgroundColor: "#F194FF",
         borderRadius: 20,
         padding: 10,
@@ -119,6 +119,30 @@ export default StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: "center",
-        fontSize:17
+        fontSize: 17
+    },
+    textCardSearh: {
+        fontSize: 17,
+        textAlignVertical: "center",
+        textAlign: 'left',
+        paddingLeft: 10
+    },
+    viewRender: {
+        zIndex: 10,
+        borderWidth: 1,
+        borderColor: "#309D9E",
+        marginHorizontal: 20,
+        marginTop: 10,
+        borderRadius: 10,
+        padding: 5
+    },
+    txtInput: {
+        width: '80%',
+        height: 40,
+        borderBottomColor: '#309D9E',
+        borderBottomWidth: 1,
+        fontSize: 17,
+        paddingBottom: 0,
+
     }
 })

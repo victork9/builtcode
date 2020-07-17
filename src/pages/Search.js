@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Picker, FlatList } from 'react-native';
 import api from '../services/api';
 import { useNavigation } from '@react-navigation/native';
-
+import styles from '../styles/styles'
 // import { Container } from './styles';
 
 function Search() {
@@ -55,22 +55,22 @@ function Search() {
   }
   function renderItem({ item }) {
     return (
-      <View style={{ zIndex: 10, borderWidth: 1, borderColor: "#309D9E", marginHorizontal: 20, marginTop: 10, borderRadius: 10, padding: 5 }}>
+      <View style={styles.viewRender}>
         <View style={{ flexDirection: 'row' }}>
           <Text style={{ fontSize: 17 }}>Nome:</Text>
-          <Text style={{ fontSize: 17, textAlignVertical: "center", textAlign: 'left', paddingLeft: 10 }}>
+          <Text style={styles.textCardSearh}>
             {item.name}
           </Text>
         </View>
         <View style={{ flexDirection: 'row' }}>
           <Text style={{ fontSize: 17 }}>Cpf:</Text>
-          <Text style={{ fontSize: 17, textAlignVertical: "center", textAlign: 'left', paddingLeft: 10 }}>
+          <Text style={styles.textCardSearh}>
             {item.Cpf}
           </Text>
         </View>
         <View style={{ flexDirection: 'row' }}>
           <Text style={{ fontSize: 17 }}>Data de Nasc:</Text>
-          <Text style={{ fontSize: 17, textAlignVertical: "center", textAlign: 'left', paddingLeft: 10 }}>
+          <Text style={styles.textCardSearh}>
             {item.DataNasc}
           </Text>
         </View>
