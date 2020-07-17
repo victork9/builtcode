@@ -27,8 +27,13 @@ export default function Doctor() {
 
 
   async function listDoctor() {
-    const response = await api.get('/ListDoctors')
-    setListData(response.data)
+    try {
+      const response = await api.get('/ListDoctors')
+      setListData(response.data)
+    } catch (error) {
+      console.log("Falha conexão")
+    }
+   
   }
 
   useEffect(() => {

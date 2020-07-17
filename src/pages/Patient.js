@@ -19,6 +19,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import styles from '../styles/styles'
 import api from '../services/api'
+import { useNavigation } from '@react-navigation/native';
 
 export default function Patient() {
   //date picker
@@ -36,7 +37,7 @@ export default function Patient() {
 
   const [identificador, setIdentificador] = useState('');
   const [modeBtn, setmodeBtn] = useState(false);
-
+  const navigation = useNavigation()
 
   // functions to date picker
   const onChange = async (event, selectedDate) => {
@@ -60,8 +61,13 @@ export default function Patient() {
   };
 
   async function listPatient() {
-    const response = await api.get('/ListPatients')
-    setListData(response.data)
+    try {
+      const response = await api.get('/ListPatients')
+      setListData(response.data)
+    } catch (error) {
+      console.log("Falha conexão")
+    }
+   
   }
 
   useEffect(() => {
@@ -70,12 +76,21 @@ export default function Patient() {
   }, [])
 
   async function listDoctor() {
-    const response = await api.get('/ListDoctors')
-    setListDataDoctor(response.data)
+    try {
+      const response = await api.get('/ListDoctors')
+      setListDataDoctor(response.data)
+    } catch (error) {
+      console.log('Falha conexão')
+    }
+   
   }
 
   useEffect(() => {
-    listDoctor()
+
+    navigation.addListener('focus', () => {
+      listDoctor()
+    })
+
   }, [])
 
 
@@ -103,18 +118,20 @@ export default function Patient() {
           Medico,
           identificador: identificador.length > 0 ? identificador : null
         })
-
-        if (modeBtn == true) {
-          await updateInfoOff()
+        if (modeBtn == false && response.date == 'existe Registro') {
+          Alert.alert("Atenção", "Paciente já está cadastrado")
+        } else {
+          if (modeBtn == true) {
+            await updateInfoOff()
+          }
+          listPatient()
+          setIsVisible(false)
+          setcpfPatient('')
+          setShow(false)
+          setnamePatient('')
+          setmodeBtn(false)
+          setIdentificador('')
         }
-        listPatient()
-        setIsVisible(false)
-        setcpfPatient('')
-        setShow(false)
-        setnamePatient('')
-        setmodeBtn(false)
-        setIdentificador('')
-
       } catch (error) {
         Alert.alert("Falha na conexão")
       }
@@ -134,7 +151,7 @@ export default function Patient() {
   function loadInfo(rowMap, rowKey) {
     setmodeBtn(true)
     const keyData = listData.filter(item => item.key === rowKey)
-  
+
     setDate(new Date())
     setcpfPatient(keyData[0].Cpf)
     setIdentificador(keyData[0].key)
@@ -173,14 +190,14 @@ export default function Patient() {
   const renderItem = data => (
     <TouchableHighlight
       onPress={() => { console.log(data) }}
-      style={[styles.rowFront, { height: 75 }]}
+      style={[styles.rowFront, { height: 75, marginTop: 10, }]}
       underlayColor={'#fff'}
     >
-      <View style={{ marginLeft: 15 }}>
+      <View style={{ marginLeft: 15, marginBottom: 10 }}>
         <Text style={{ fontSize: 17 }}>Nome: {data.item.name}</Text>
         <Text style={{ fontSize: 17 }}>CPF: {data.item.Cpf}</Text>
-        <View style={{justifyContent:'center',marginVertical:15, alignSelf:"flex-end",position:'absolute'}}>
-        <MaterialIcons name="keyboard-arrow-left" size={50} color="#309D9E" />
+        <View style={{ justifyContent: 'center', marginVertical: 15, alignSelf: "flex-end", position: 'absolute' }}>
+          <MaterialIcons name="keyboard-arrow-left" size={50} color="#309D9E" />
         </View>
         <Text style={{ fontSize: 17 }}>Data de Nasc: {data.item.DataNasc}</Text>
       </View>
@@ -189,9 +206,9 @@ export default function Patient() {
   );
 
   const renderHiddenItem = (data, rowMap) => {
-   
+
     return (
-      <View style={styles.rowBack}>
+      <View style={[styles.rowBack, { marginTop: 10 }]}>
         <TouchableOpacity
           style={[styles.backRightBtn, styles.backRightBtnLeft, { height: 80 }]}
           onPress={() => loadInfo(rowMap, data.item.key)}

@@ -13,9 +13,14 @@ function Search() {
   const [refreshing, setRefreshing] = useState(false);
 
   async function listDoctor() {
-    const response = await api.get('/ListDoctors')
+    try {
+      const response = await api.get('/ListDoctors')
 
-    setListDataDoctor(response.data)
+      setListDataDoctor(response.data)
+    } catch (error) {
+      console.log("falha conexao")
+    }
+
   }
 
   useEffect(() => {
@@ -25,8 +30,7 @@ function Search() {
   useEffect(() => {
 
     navigation.addListener('focus', () => {
-      // selectPatientsDoctor(Medico)
-      console.log("Medico" + Medico)
+      listDoctor()
     })
 
   }, [])
