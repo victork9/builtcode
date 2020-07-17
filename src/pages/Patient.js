@@ -118,7 +118,8 @@ export default function Patient() {
           Medico,
           identificador: identificador.length > 0 ? identificador : null
         })
-        if (modeBtn == false && response.date == 'existe Registro') {
+       
+        if (modeBtn == false && response.data == 'existe Registro') {
           Alert.alert("Atenção", "Paciente já está cadastrado")
         } else {
           if (modeBtn == true) {
