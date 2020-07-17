@@ -81,7 +81,7 @@ function Search() {
   return (
     <View>
       <Text style={{ textAlign: "center", fontSize: 18, marginTop: 10 }}>Selecione um médico para filtrar</Text>
-      <View style={{ width: '100%', height: 40, marginTop: 15, borderWidth: 1, justifyContent: 'center' }}>
+      <View style={{ width: '90%',alignSelf:'center', height: 40, marginTop: 15, borderWidth: 1, justifyContent: 'center' }}>
         <Picker
           style={{ justifyContent: "center", }}
           mode={'dialog'}
