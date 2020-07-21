@@ -9,7 +9,8 @@ import {
   Alert,
   TextInput,
   ToastAndroid,
-  Picker
+  Picker,
+  Platform
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import closeRow from '../componets/closeRow'
@@ -21,21 +22,28 @@ import styles from '../styles/styles'
 import api from '../services/api'
 import { useNavigation } from '@react-navigation/native';
 
+interface ListaDatas {
+  key: number,
+  name: string,
+  fk_doc: number,
+  Cpf: string,
+  DataNasc: Date
+}
+
 export default function Patient() {
   //date picker
   const [date, setDate] = useState(new Date());
-  const [dateBirth, setDateBirth] = useState('');
-  const [mode, setMode] = useState('date');
+  const [dateBirth, setDateBirth] = useState("");
   const [show, setShow] = useState(false);
-  const [Medico, setMedico] = useState('');
+  const [Medico, setMedico] = useState(0);
 
-  const [listData, setListData] = useState([]);
+  const [listData, setListData] = useState<ListaDatas[]>([]);
   const [listDataDoctor, setListDataDoctor] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
-  const [namePatient, setnamePatient] = useState('');
-  const [cpfPatient, setcpfPatient] = useState('');
+  const [namePatient, setnamePatient] = useState("");
+  const [cpfPatient, setcpfPatient] = useState("");
 
-  const [identificador, setIdentificador] = useState('');
+  const [identificador, setIdentificador] = useState(0);
   const [modeBtn, setmodeBtn] = useState(false);
   const navigation = useNavigation()
 
@@ -100,11 +108,11 @@ export default function Patient() {
       ToastAndroid.show("Por favor, digite um nome Válido", ToastAndroid.LONG)
     } else if (cpfPatient.length < 3) {
       ToastAndroid.show("Por favor, digite um Cpf Válido", ToastAndroid.LONG)
-    } else if (dateBirth == '') {
+    } else if (!dateBirth) {
       ToastAndroid.show("Por favor, escolha uma data Válida", ToastAndroid.LONG)
     } else if (validateCpf(cpfPatient) != true) {
       ToastAndroid.show("Cpf não é válido", ToastAndroid.LONG)
-    } else if (Medico == '') {
+    } else if (Medico == 0) {
       ToastAndroid.show("Por favor, Escolha um médico", ToastAndroid.LONG)
     }
     else {
@@ -116,9 +124,9 @@ export default function Patient() {
           cpfPatient: cpfPatient.replace(/\.|\-|\//g, ''),
           dateBirth,
           Medico,
-          identificador: identificador.length > 0 ? identificador : null
+          identificador: identificador == 0 ? identificador : null
         })
-       
+
         if (modeBtn == false && response.data == 'existe Registro') {
           Alert.alert("Atenção", "Paciente já está cadastrado")
         } else {
@@ -127,11 +135,11 @@ export default function Patient() {
           }
           listPatient()
           setIsVisible(false)
-          setcpfPatient('')
+          setcpfPatient("")
           setShow(false)
-          setnamePatient('')
+          setnamePatient("")
           setmodeBtn(false)
-          setIdentificador('')
+          setIdentificador(0)
         }
       } catch (error) {
         Alert.alert("Falha na conexão")
@@ -144,7 +152,7 @@ export default function Patient() {
 
     updateInfoOff[0].Cpf = cpfPatient
     updateInfoOff[0].name = namePatient
-    updateInfoOff[0].DataNasc = dateBirth
+    updateInfoOff[0].DataNasc = new Date(dateBirth)
     updateInfoOff[0].fk_doc = Medico
     return;
   }
@@ -157,7 +165,7 @@ export default function Patient() {
     setcpfPatient(keyData[0].Cpf)
     setIdentificador(keyData[0].key)
     setnamePatient(keyData[0].name)
-    setDateBirth(keyData[0].DataNasc)
+    setDateBirth(keyData[0].DataNasc.toString())
     setMedico(keyData[0].fk_doc)
     setIsVisible(true)
     closeRow(rowMap, rowKey)
@@ -332,11 +340,11 @@ export default function Patient() {
                 style={{ ...styles.openButton, backgroundColor: "#2196F3", width: 90, }}
                 onPress={() => {
                   setIsVisible(false)
-                  setcpfPatient('')
+                  setcpfPatient("")
                   setShow(false)
-                  setnamePatient('')
+                  setnamePatient("")
                   setmodeBtn(false)
-                  setMedico('')
+                  setMedico(0)
                 }}>
                 <Text style={styles.textStyle}>FECHAR</Text>
               </TouchableHighlight>
@@ -374,7 +382,7 @@ export default function Patient() {
         <DateTimePicker
           testID="dateTimePicker"
           value={date}
-          mode={mode}
+          mode={'date'}
           is24Hour={true}
           display="spinner"
           onChange={onChange}

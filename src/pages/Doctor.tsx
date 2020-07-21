@@ -16,13 +16,22 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import styles from '../styles/styles'
 import api from '../services/api'
+
+interface ListaDatas {
+  key: number,
+  name:string,
+  Crm: string,
+  CrmUf: string
+}
+
 export default function Doctor() {
-  const [listData, setListData] = useState([]);
+
+  const [listData, setListData] = useState<ListaDatas[]>([]);
   const [isVisible, setIsVisible] = useState(false);
-  const [nameDoc, setnameDoc] = useState('');
-  const [crmDoc, setcrmDoc] = useState('');
-  const [stateDoc, setstateDoc] = useState('');
-  const [identificador, setIdentificador] = useState('');
+  const [nameDoc, setnameDoc] = useState("");
+  const [crmDoc, setcrmDoc] = useState("");
+  const [stateDoc, setstateDoc] = useState("");
+  const [identificador, setIdentificador] = useState(0);
   const [modeBtn, setmodeBtn] = useState(false);
 
 
@@ -43,10 +52,10 @@ export default function Doctor() {
   async function infosDoctor() {
     if (nameDoc.length < 2) {
       ToastAndroid.show("Por favor, digite um nome Válido", ToastAndroid.LONG)
-    } else if (crmDoc.length < 3) {
+    } else if (crmDoc.length  <2 ) {
       ToastAndroid.show("Por favor, digite um CRM Válido", ToastAndroid.LONG)
     }
-    else if (stateDoc < 2) {
+    else if (stateDoc.length < 2) {
       ToastAndroid.show("Por favor, digite um estado Válido", ToastAndroid.LONG)
     } else {
 
@@ -56,9 +65,9 @@ export default function Doctor() {
           nameDoc,
           crmDoc,
           stateDoc,
-          identificador: identificador.length > 0 ? identificador : null
+          identificador: identificador == 0 ? identificador : null
         })
-        if (modeBtn == false && response.date == 'Existe') {
+        if (modeBtn == false && response.data == 'Existe') {
           Alert.alert("Atenção", "Médico já possue cadastro")
         } else {
           if (modeBtn == true) {
@@ -66,11 +75,11 @@ export default function Doctor() {
           }
           listDoctor()
           setIsVisible(false)
-          setcrmDoc('')
-          setstateDoc('')
+          setcrmDoc("")
+          setstateDoc(null)
           setnameDoc('')
           setmodeBtn(false)
-          setIdentificador('')
+          setIdentificador(0)
         }
       } catch (error) {
         Alert.alert("Falha na conexão")
@@ -208,7 +217,7 @@ export default function Doctor() {
                 keyboardType={'numeric'}
                 maxLength={13}
                 placeholder={"Ex: 12546"}
-                onChangeText={(text) => setcrmDoc(text)}
+                onChangeText={setcrmDoc}
                 multiline={true}
               />
 
@@ -223,7 +232,7 @@ export default function Doctor() {
                 autoCapitalize={'characters'}
                 maxLength={2}
                 placeholder={"Ex: SP"}
-                onChangeText={(text) => setstateDoc(text)}
+                onChangeText={setstateDoc}
                 multiline={true}
               />
 
@@ -251,9 +260,9 @@ export default function Doctor() {
                 style={{ ...styles.openButton, backgroundColor: "#2196F3", width: 90, }}
                 onPress={() => {
                   setIsVisible(false)
-                  setcrmDoc('')
-                  setstateDoc('')
-                  setnameDoc('')
+                  setcrmDoc("")
+                  setstateDoc("")
+                  setnameDoc("")
                   setmodeBtn(false)
                 }}>
                 <Text style={styles.textStyle}>FECHAR</Text>
